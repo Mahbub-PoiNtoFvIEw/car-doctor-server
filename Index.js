@@ -90,7 +90,19 @@ async function run() {
 
     // services related api
     app.get("/services", async (req, res) => {
-      const cursor = servicesCollection.find();
+      const filter = req.query;
+      console.log(filter);
+      const query = {
+        // price:{$gt: 100, $lt: 500}
+        title: {$regex: filter.search, $options: 'i'}
+      };
+      const options = {
+        sort:{
+          price: filter.sort === 'asc' ? 1 : -1
+        }
+      }
+      console.log(res.price)
+      const cursor = servicesCollection.find(query, options);
       const result = await cursor.toArray();
       res.send(result);
     });
